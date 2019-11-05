@@ -1,5 +1,5 @@
 const matrix = [
-    row0 = [
+    [
         {keyCode: 192, shifted_ru: '¨', shifted_en: '~', en: '`', ru: '¸', width:1 },
         {keyCode: 49, shifted_ru: '!', shifted_en: '!', en: '1', ru: '1', width:1 },
         {keyCode: 50, shifted_ru: '"', shifted_en: '@', en: '2', ru: '2', width:1 },
@@ -15,7 +15,7 @@ const matrix = [
         {keyCode: 61, shifted_ru: '+', shifted_en: '+', en: '=', ru: '=', width:1 },
         {keyCode: 8, title: 'Backspace', width:2 },
     ],
-    row1 = [
+    [
         {keyCode: 9, title: 'Tab', width:1 },
         {keyCode: 81, shifted_ru: 'É', shifted_en: 'Q', en: 'q', ru: 'é', width:1 },
         {keyCode: 87, shifted_ru: 'Ö', shifted_en: 'W', en: 'w', ru: 'ö', width:1 },
@@ -32,7 +32,7 @@ const matrix = [
         {keyCode: 220, shifted_ru: '/', shifted_en: '|', en: '\\', ru: '\\', width:1 },
         {keyCode: 46, title: 'Del', width:1 },
     ],
-    row2 = [
+    [
         {keyCode: 20, title: 'CapsLock', width:2 },
         {keyCode: 65, shifted_ru: 'Ô', shifted_en: 'A', en: 'a', ru: 'ô', width:1 },
         {keyCode: 83, shifted_ru: 'Û', shifted_en: 'S', en: 's', ru: 'û', width:1 },
@@ -47,7 +47,7 @@ const matrix = [
         {keyCode: 222, shifted_ru: 'Ý', shifted_en: '"', en: "'", ru: 'ý', width:1 },
         {keyCode: 13, value:"\n", title: 'Enter', width:2 },
     ],
-    row3 = [
+    [
         {keyCode: 16, code: 'ShiftLeft', title: 'Shift', width:2 },
         {keyCode: 90, shifted_ru: 'ß', shifted_en: 'Z', en: 'z', ru: 'ÿ', width:1 },
         {keyCode: 88, shifted_ru: '×', shifted_en: 'X', en: 'x', ru: '÷', width:1 },
@@ -62,7 +62,7 @@ const matrix = [
         {keyCode: 38, title: '&uarr;', width:1 },
         {keyCode: 16, code: 'ShiftRight', title: 'Shift', width:2 },
     ],
-    row4 = [
+    [
         {keyCode: 17, code: 'ControlLeft', title: 'Ctrl', width:1 },
         {keyCode: 91, title: 'Win', width:1 },
         {keyCode: 18, code: 'AltLeft', title: 'Alt', width:1 },
@@ -74,11 +74,9 @@ const matrix = [
         {keyCode: 17, code: 'ControlRight', title: 'Ctrl', width:1 },
     ]
 ]
-
 let container = document.createElement('div');
 let textarea = document.createElement('textarea');
 let keyboard = document.createElement('div');
-let keycont = document.querySelector('.keyboard');
 let langru;
 
 document.body.append(container);
@@ -137,7 +135,7 @@ function NotActiveKey(){
             elem.classList.remove('active');
         }
     }
-};
+}
 function BackLight(){
     document.addEventListener('keydown', function(event) {
         textarea.focus();
@@ -153,7 +151,7 @@ function BackLight(){
         }    
     });
 
-    document.addEventListener('keyup', function(event) {   
+    document.addEventListener('keyup', function() {   
         NotActiveKey();
     });
 }
