@@ -298,10 +298,17 @@ function CapsLock(){
                             elem.innerHTML = matrix[i][j].shifted_ru;
                             break;
                       }      
+<<<<<<< HEAD
                 }      
             }
         }
     }
+=======
+            }      
+        }
+    }
+  }
+>>>>>>> 76235a440202a500971ef996eb85bddda0479aa5
 }
 function Tab(){
     event.preventDefault();
