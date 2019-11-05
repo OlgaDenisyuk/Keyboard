@@ -123,11 +123,21 @@ function addKey(){
 addKey();
 
 let elements = document.querySelectorAll('.keyboard span');
-let capsy = document.getElementById('20');
-let back = document.getElementById('8');
-let del = document.getElementById('46');
-let ent = document.getElementById('13');
-let tab = document.getElementById('9');
+
+class FunctionKeys {
+    constructor(id) {
+        this.id = id;
+    } 
+    ById() {
+        document.getElementById(this.id);
+    }
+  
+  }
+let capsy = new FunctionKeys('20');
+let back = new FunctionKeys('8');
+let del = new FunctionKeys('46');
+let ent = new FunctionKeys('13');
+let tab = new FunctionKeys('9');
 
 function NotActiveKey(){
     for (let elem of elements) {
