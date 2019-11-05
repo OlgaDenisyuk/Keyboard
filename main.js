@@ -78,6 +78,8 @@ const matrix = [
 let container = document.createElement('div');
 let textarea = document.createElement('textarea');
 let keyboard = document.createElement('div');
+let keycont = document.querySelector('.keyboard');
+let langru;
 
 document.body.append(container);
 container.append(textarea);
@@ -86,20 +88,27 @@ container.append(keyboard);
 container.className = 'container';
 keyboard.className = 'keyboard';
 
-let keycont = document.querySelector('.keyboard');
-
 
 function addKey(){
+    localStorage.getItem('key');
+
     for( let i = 0; i < matrix.length; i++ ){
        let row =  document.createElement('div');
        keyboard.append(row);
        row.className = 'row' + i;
-       for( let j = 0; j < matrix[i].length; j++ ){
-        let key =  document.createElement('span');
-        row.append(key);
-        key.className = 'key' + matrix[i][j].width;
+
+        for( let j = 0; j < matrix[i].length; j++ ){
+            let key =  document.createElement('span');
+            row.append(key);
+            key.className = 'key' + matrix[i][j].width;
+
             if(matrix[i][j].en){
-                key.innerHTML = matrix[i][j].en;
+                if(localStorage.getItem('key') === 'true') {
+                    key.innerHTML = matrix[i][j].ru;
+                }
+                else{
+                    key.innerHTML = matrix[i][j].en;
+                }
             }
             else{
                 key.innerHTML = matrix[i][j].title;
@@ -108,6 +117,7 @@ function addKey(){
             if(matrix[i][j].code){
                 key.setAttribute('data-about', '' + matrix[i][j].code);
             }
+
         key.id = matrix[i][j].keyCode;    
        }
     }
@@ -115,41 +125,186 @@ function addKey(){
 addKey();
 
 let elements = document.querySelectorAll('.keyboard span');
+let capsy = document.getElementById('20');
+let back = document.getElementById('8');
+let del = document.getElementById('46');
+let ent = document.getElementById('13');
+let tab = document.getElementById('9');
 
+function NotActiveKey(){
+    for (let elem of elements) {
+        if(elem != capsy){
+            elem.classList.remove('active');
+        }
+    }
+};
 function BackLight(){
     document.addEventListener('keydown', function(event) {
         textarea.focus();
         for (let elem of elements) {
            if((elem.id == event.keyCode && !elem.dataset.about) || (elem.id == event.keyCode && elem.dataset.about == event.code)){
-                elem.classList.add('active');
+               if(elem == capsy) {
+                    elem.classList.toggle('active');
+               }
+               else{
+                    elem.classList.add('active');
+               }
             }
         }    
     });
 
-    document.addEventListener('keyup', function(event) {
-        for (let elem of elements) {
-        elem.classList.remove('active');
+    document.addEventListener('keyup', function(event) {   
+        NotActiveKey();
+    });
+}
+
+function insertText(){
+
+    document.addEventListener('mousedown', function(event) {
+        let target = event.target.closest('span');
+        if(!target) return;
+        if(target !== capsy){
+            target.classList.add('active');
+        }    
+        if(target.classList.contains('darkened') && target.id != 32)
+        {
+            if(target === capsy){
+                capsy.classList.toggle('active');
+                CapsLock();
+            }
+            else if(target === back){
+                clearText();
+            }
+            else if(target === del){
+                deleteText();
+            }
+            else if(target === ent){
+                interText();
+            }
+            else if(target === tab){
+                Tab();
+            }
+        }
+        else
+        {
+            let char = target.textContent;
+            textarea.value += char;
+        }
+    }); 
+
+    document.addEventListener('mouseup', function(event) {
+        let target = event.target.closest('span');
+        if(!target) return;
+        if(target != capsy){
+            target.classList.remove('active');
         }
     });
 }
 BackLight();
-function insertText(){
-    document.addEventListener('mousedown', function(event) {
-        if(event.target.classList.contains('darkened') && event.target.id != 32) return;
-        else
-        {
-            let char = event.target.textContent;
-            let start = textarea.selectionStart;
-	        let end = textarea.selectionEnd;
-            let finText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
-            textarea.value = finText;
-            textarea.focus();
-            textarea.selectionEnd = ( start == end )? (end + char.length) : end ;
-            event.target.classList.add('active');
-        }
-    });
-    document.addEventListener('mouseup', function(event) {
-            event.target.classList.remove('active');
-    });
-}
 insertText();
+
+function clearText(){
+    let text = textarea.value;
+    textarea.value = text.slice(0, textarea.textLength - 1);
+} 
+function deleteText(){
+    textarea.setRangeText('', textarea.selectionStart, textarea.selectionEnd);
+} 
+function interText(){
+    textarea.value += `\n`;
+}
+
+function runOnKeys(func, ...keys) {
+    let pressed = new Set();
+
+    document.addEventListener('keydown', function(event) {
+      pressed.add(event.key);
+
+      for (let key of keys) { 
+        if (!pressed.has(key)) {
+          return;
+        }
+      }
+      pressed.clear();
+
+      func();
+    });
+
+    document.addEventListener('keyup', function(event) {
+      pressed.delete(event.key);
+    });
+
+}
+
+runOnKeys(
+    () => ChangeLang(),
+    "Alt",
+    "Shift"
+);
+runOnKeys(
+    () => CapsLock(),
+    "CapsLock"
+);
+runOnKeys(
+    () => Tab(),
+    "Tab"
+);
+function ChangeLang(){
+    for( let i = 0; i < matrix.length; i++ ){
+        for( let j = 0; j < matrix[i].length; j++ ){
+            for (let elem of elements) {
+                if(elem.id == matrix[i][j].keyCode){ 
+                    switch (elem.innerHTML) {
+                        case matrix[i][j].en:
+                            elem.innerHTML = matrix[i][j].ru;
+                            langru = true;
+                            break;
+                        case matrix[i][j].shifted_en:
+                            elem.innerHTML = matrix[i][j].shifted_ru;
+                            langru = true;
+                            break;
+                        case matrix[i][j].shifted_ru:
+                            elem.innerHTML = matrix[i][j].shifted_en;
+                            langru = false;
+                            break;
+                        case matrix[i][j].ru:
+                            elem.innerHTML = matrix[i][j].en;
+                            langru = false;
+                            break;
+                      }       
+            }        
+        }
+    }
+  }
+  localStorage.setItem('key', langru);
+}
+
+function CapsLock(){
+    for( let i = 0; i < matrix.length; i++ ){
+        for( let j = 0; j < matrix[i].length; j++ ){
+            for (let elem of elements) {
+                if(elem.id == matrix[i][j].keyCode){
+                    switch (elem.innerHTML) {
+                        case matrix[i][j].shifted_en:
+                            elem.innerHTML = matrix[i][j].en;
+                            break;
+                        case matrix[i][j].en:
+                            elem.innerHTML = matrix[i][j].shifted_en;
+                            break;
+                        case matrix[i][j].shifted_ru:
+                            elem.innerHTML = matrix[i][j].ru;
+                            break;
+                        case matrix[i][j].ru:
+                            elem.innerHTML = matrix[i][j].shifted_ru;
+                            break;
+                      }      
+                }      
+            }
+        }
+    }
+}
+function Tab(){
+    event.preventDefault();
+    textarea.value += `\t`;
+}
+
