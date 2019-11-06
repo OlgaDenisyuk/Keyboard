@@ -128,6 +128,8 @@ let back = document.getElementById('8');
 let del = document.getElementById('46');
 let ent = document.getElementById('13');
 let tab = document.getElementById('9');
+let inleft = document.getElementById('37');
+let inright = document.getElementById('39');
 
 function NotActiveKey(){
     for (let elem of elements) {
@@ -182,6 +184,12 @@ function insertText(){
             else if(target === tab){
                 Tab();
             }
+            else if(target === inleft){
+                inLeftText();
+            }
+            else if(target === inright){
+                inRightText();
+            }
         }
         else
         {
@@ -210,6 +218,12 @@ function deleteText(){
 } 
 function interText(){
     textarea.value += `\n`;
+}
+function inLeftText(){
+    textarea.selectionEnd -= 1;
+}
+function inRightText(){
+    textarea.selectionStart += 1;
 }
 
 function runOnKeys(func, ...keys) {
