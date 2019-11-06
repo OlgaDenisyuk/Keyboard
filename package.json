@@ -1,6 +1,0 @@
-{
-    "extends": "airbnb-base",
-    "devDependencies": {
-        "eslint": "^6.6.0"
-    }
-}
